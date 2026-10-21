@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JSJ Delivery — Toshkent</title>
+<style>
+:root{--green:#16834a;--dark:#14251c;--light:#f4f7f4;--muted:#68766d;--orange:#ffb84d}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--light);color:var(--dark)}
+header{background:linear-gradient(135deg,#126d3c,#1d9b5b);color:white;padding:24px 16px 28px;border-radius:0 0 24px 24px}
+.top{max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:23px;font-weight:800;letter-spacing:.3px}.logo span{color:#ffe0a1}
+.pill{font-size:12px;background:#ffffff24;padding:8px 11px;border-radius:20px}
+header h1{max-width:1000px;margin:25px auto 8px;font-size:clamp(26px,5vw,40px);line-height:1.1}
+header p{max-width:1000px;margin:0 auto;color:#e2f5e9;line-height:1.5}
+main{max-width:1000px;margin:20px auto;padding:0 14px 36px}
+.notice{background:#fff7e8;border:1px solid #ffe0a1;color:#694710;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.45;margin-bottom:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+input,select,textarea{font:inherit;border:1px solid #dce4dd;border-radius:10px;padding:12px;background:white;width:100%;color:var(--dark)}
+.search{flex:1;min-width:180px}.category{width:auto;min-width:145px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.card{background:white;border:1px solid #e5ebe6;border-radius:16px;padding:15px;box-shadow:0 3px 12px #153f2410}
+.food-icon{height:100px;border-radius:12px;background:#eff8f1;display:grid;place-items:center;font-size:52px;margin-bottom:12px}
+.card h3{margin:4px 0 7px;font-size:17px}.desc{font-size:13px;color:var(--muted);min-height:32px;line-height:1.4}
+.price-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
+.price{font-weight:800}.btn{border:0;border-radius:10px;padding:11px 14px;background:var(--green);color:white;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(.95)}.btn.secondary{background:#eaf4ed;color:#17653a}.btn:disabled{opacity:.4;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:16px;align-items:start}
+.panel{background:white;border:1px solid #e5ebe6;border-radius:16px;padding:17px}
+.panel h2{margin:0 0 14px;font-size:20px}.field{margin:10px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.cart-item{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #edf0ed;padding:10px 0;font-size:14px}
+.qty{display:flex;align-items:center;gap:7px}.qty button{border:0;background:#eaf4ed;border-radius:6px;padding:4px 8px;cursor:pointer}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:18px;margin:15px 0}
+.small{font-size:12px;color:var(--muted);line-height:1.5}.empty{color:var(--muted);font-size:14px;padding:10px 0}
+footer{text-align:center;padding:22px 12px;color:var(--muted);font-size:12px}
+.success{display:none;background:#e9f8ee;color:#145f34;border-radius:10px;padding:12px;margin-top:12px;font-size:14px;line-height:1.5}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.top{align-items:flex-start}.pill{max-width:145px;text-align:center}header h1{margin-top:22px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div class="logo">JSJ <span>Delivery</span></div><div class="pill">📍 Toshkent shahri</div></div>
+  <h1>Oziq-ovqat — eshigingizgacha.</h1>
+  <p>Mahsulotlarni tanlang, savatga qo‘shing va buyurtma namunasini yuboring.</p>
+</header>
+<main>
+  <div class="notice"><b>Sinov versiyasi.</b> Bu hozircha demo: buyurtmalar serverga yuborilmaydi va haqiqiy kuryer chaqirilmaydi. Ishga tushirishdan oldin telefon raqami, buyurtmalar paneli va yetkazish jarayonini ulash kerak.</div>
+  <div class="toolbar">
+    <input id="search" class="search" placeholder="Mahsulot qidirish..." aria-label="Mahsulot qidirish">
+    <select id="category" class="category" aria-label="Kategoriya">
+      <option value="all">Barcha mahsulotlar</option><option value="meva">Meva-sabzavot</option><option value="sut">Sut mahsulotlari</option><option value="non">Non va pishiriqlar</option><option value="ichimlik">Ichimliklar</option><option value="kundalik">Kundalik mahsulotlar</option>
+    </select>
+  </div>
+  <div class="layout">
+    <section><div id="products" class="grid"></div></section>
+    <aside class="panel">
+      <h2>🛒 Savat <span id="cartCount" class="small">(0 ta)</span></h2>
+      <div id="cart"><div class="empty">Hozircha savat bo‘sh.</div></div>
+      <div class="total"><span>Jami</span><span id="total">0 so‘m</span></div>
+      <div class="small">Yetkazib berish narxi buyurtma tasdiqlanganda belgilanadi.</div>
+      <hr style="border:0;border-top:1px solid #edf0ed;margin:16px 0">
+      <h2>Buyurtma ma’lumotlari</h2>
+      <form id="orderForm">
+        <div class="field"><label for="name">Ismingiz</label><input id="name" required placeholder="Masalan, Jahongir"></div>
+        <div class="field"><label for="phone">Telefon raqamingiz</label><input id="phone" required type="tel" placeholder="+998 90 123 45 67"></div>
+        <div class="field"><label for="district">Tuman</label><select id="district" required><option value="">Tumanni tanlang</option><option>Chilonzor</option><option>Yunusobod</option><option>Yakkasaroy</option><option>Mirzo Ulug‘bek</option><option>Mirobod</option><option>Shayxontohur</option><option>Olmazor</option><option>Uchtepa</option><option>Yashnobod</option><option>Sergeli</option><option>Bektemir</option><option>Yangihayot</option><option>Boshqa / aniqlashtirish kerak</option></select></div>
+        <div class="field"><label for="address">To‘liq manzil</label><textarea id="address" required rows="2" placeholder="Ko‘cha, uy, xonadon, mo‘ljal"></textarea></div>
+        <div class="field"><label for="comment">Izoh (ixtiyoriy)</label><textarea id="comment" rows="2" placeholder="Mahsulot yoki yetkazish bo‘yicha izoh"></textarea></div>
+        <button class="btn" type="submit" style="width:100%">Buyurtma namunasini tayyorlash</button>
+      </form>
+      <div id="success" class="success"></div>
+      <p class="small">Demo ma’lumotlari ushbu sahifadan tashqariga yuborilmaydi. Haqiqiy buyurtma qabul qilish uchun backend/administrator paneli kerak.</p>
+    </aside>
+  </div>
+</main>
+<footer>© JSJ Delivery · Toshkent · Dastlabki demo versiya</footer>
+<script>
+const products=[
+{id:1,name:"Olma",cat:"meva",desc:"1 kg · mavsumiy meva",price:12000,icon:"🍎"},
+{id:2,name:"Banan",cat:"meva",desc:"1 kg · yangi banan",price:22000,icon:"🍌"},
+{id:3,name:"Kartoshka",cat:"meva",desc:"1 kg · kundalik mahsulot",price:7000,icon:"🥔"},
+{id:4,name:"Pomidor",cat:"meva",desc:"1 kg · yangi sabzavot",price:14000,icon:"🍅"},
+{id:5,name:"Sut",cat:"sut",desc:"1 litr",price:12000,icon:"🥛"},
+{id:6,name:"Qatiq",cat:"sut",desc:"1 litr",price:11000,icon:"🥣"},
+{id:7,name:"Tuxum",cat:"kundalik",desc:"10 dona",price:18000,icon:"🥚"},
+{id:8,name:"Non",cat:"non",desc:"1 dona",price:4000,icon:"🍞"},
+{id:9,name:"Somsa",cat:"non",desc:"1 dona · demo narx",price:8000,icon:"🥟"},
+{id:10,name:"Ichimlik suvi",cat:"ichimlik",desc:"1,5 litr",price:6000,icon:"💧"},
+{id:11,name:"Sharbat",cat:"ichimlik",desc:"1 litr",price:15000,icon:"🧃"},
+{id:12,name:"Guruch",cat:"kundalik",desc:"1 kg",price:18000,icon:"🍚"}
+];
+let cart={};
+const money=n=>new Intl.NumberFormat('uz-UZ').format(n)+" so‘m";
+function renderProducts(){
+ const q=document.getElementById('search').value.trim().toLowerCase(),cat=document.getElementById('category').value;
+ const filtered=products.filter(p=>(cat==='all'||p.cat===cat)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
+ document.getElementById('products').innerHTML=filtered.map(p=>`<article class="card"><div class="food-icon">${p.icon}</div><h3>${p.name}</h3><div class="desc">${p.desc}</div><div class="price-row"><span class="price">${money(p.price)}</span><button class="btn" onclick="add(${p.id})">+ Savatga</button></div></article>`).join('')||'<p class="empty">Mahsulot topilmadi.</p>';
+}
+function add(id){cart[id]=(cart[id]||0)+1;renderCart()}
+function change(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];renderCart()}
+function renderCart(){
+ const ids=Object.keys(cart),count=ids.reduce((s,id)=>s+cart[id],0),sum=ids.reduce((s,id)=>s+cart[id]*products.find(p=>p.id==id).price,0);
+ document.getElementById('cartCount').textContent=`(${count} ta)`;
+ document.getElementById('total').textContent=money(sum);
+ document.getElementById('cart').innerHTML=ids.length?ids.map(id=>{const p=products.find(x=>x.id==id);return `<div class="cart-item"><div><b>${p.name}</b><br><span class="small">${money(p.price)} × ${cart[id]}</span></div><div class="qty"><button type="button" onclick="change(${id},-1)">−</button><span>${cart[id]}</span><button type="button" onclick="change(${id},1)">+</button></div></div>`}).join(''):'<div class="empty">Hozircha savat bo‘sh.</div>';
+}
+document.getElementById('search').addEventListener('input',renderProducts);
+document.getElementById('category').addEventListener('change',renderProducts);
+document.getElementById('orderForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ if(!Object.keys(cart).length){alert('Avval savatga kamida bitta mahsulot qo‘shing.');return}
+ const items=Object.keys(cart).map(id=>{const p=products.find(x=>x.id==id);return `${p.name} × ${cart[id]} — ${money(p.price*cart[id])}`}).join('\\n');
+ const sum=Object.keys(cart).reduce((s,id)=>s+cart[id]*products.find(p=>p.id==id).price,0);
+ const text=`JSJ DELIVERY — BUYURTMA NAMUNASI\\nIsm: ${document.getElementById('name').value}\\nTelefon: ${document.getElementById('phone').value}\\nTuman: ${document.getElementById('district').value}\\nManzil: ${document.getElementById('address').value}\\nMahsulotlar:\\n${items}\\nJami: ${money(sum)}\\nIzoh: ${document.getElementById('comment').value||'Yo‘q'}`;
+ const box=document.getElementById('success');box.style.display='block';box.innerHTML='<b>Buyurtma namunasi tayyor!</b><br>Hozircha hech kimga yuborilmadi. Quyidagi tugma orqali matnni nusxalashingiz mumkin.<br><button type="button" class="btn secondary" id="copyOrder" style="margin-top:10px">Buyurtmani nusxalash</button><pre id="orderText" style="white-space:pre-wrap;font:12px Arial;margin:10px 0 0"></pre>';
+ document.getElementById('orderText').textContent=text;
+ document.getElementById('copyOrder').onclick=async()=>{try{await navigator.clipboard.writeText(text);document.getElementById('copyOrder').textContent='Nusxalandi ✓'}catch(err){alert(text)}};
+});
+renderProducts();renderCart();
+</script>
+</body>
+</html>
